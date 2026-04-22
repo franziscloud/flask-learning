@@ -1,30 +1,25 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return '<h1>Hello, Flask!</h1>'
+    return render_template('home.html')
 
 @app.route('/about')
 def about():
-    return '<h1>This is the about page.</h1>'
+    return render_template('about.html')
 
 @app.route('/contact')
 def contact():
-    return '''<h1>Franz Niño Gregorio</h1>
-              <hr>
-              <p>franz@flasklearning.com</p>'''
-              
+    name = "Franz Niño Gregorio"
+    email = "franz@flasklearning.com"
+    return render_template('contact.html', name=name, email=email)
+
 @app.route('/projects')
 def projects():
-    return '''<h3>Here are my projects:</h3>
-            <ul>
-                <li>Online Resume</li>
-                <li>Todo App</li>
-                <li>Barter Trade Site</li>
-            </ul>'''
-
+    my_projects = ['Online Resume', 'Todo App', 'Barter Trade Site']
+    return render_template('projects.html', projects=my_projects)
 
 
 if __name__ == '__main__':
