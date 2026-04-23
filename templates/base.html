@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>{% block title %}Franz Site{% endblock %}</title>
 </head>
 <body>
     <nav>
-        <a href="/">Home</a> |
-        <a href="/about">About</a> |
-        <a href="/contact">Contact</a> |
-        <a href="/projects">Projects</a>
+        <img class="logo" src="{{ url_for('static', filename='images/gemini-logo.png') }}" alt="Logo">
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            <li><a href="{{ url_for('projects') }}">Projects</a></li>
+        </ul>
     </nav>
     <main>
         {% block content %}{% endblock %}
