@@ -3,10 +3,12 @@
 {% block title %}Projects{% endblock %}
 
 {% block content%}
-    <h2>Projects</h2>
-    <ul>
+    <h2>My Projects</h2>
         {% for project in projects %}
-            <li>{{ project }}</li>
+            <div class="project-card">
+                <h3>{{ project.name }}</h3>
+                <p>{{ project.description }}</p>
+                <a href="{{ url_for('project_detail', project_id=project.id) }}">View →</a>
+            </div>
         {% endfor %}
-    </ul>
 {% endblock %}
