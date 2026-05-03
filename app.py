@@ -1,6 +1,9 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, flash, redirect, url_for
+from forms import ContactForm
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'franz-secret-key'
 
 projects_data = [
     {'id': 1, 'name': 'Online Resume', 'description': 'A web-based resume built with Flask.', 'url': 'https://google.com'},
@@ -17,11 +20,13 @@ def home():
 def about():
     return render_template('about.html')
 
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    name = "Franz Niño Gregorio"
-    email = "franz@flasklearning.com"
-    return render_template('contact.html', name=name, email=email)
+    form = ContactForm()
+    if form.validate_on_submit():
+        flash(f"Thanks {form.name.data}, your message was received!", 'success')
+        return redirect(url_for('contact'))
+    return render_template('contact.html', form=form)
 
 @app.route('/projects')
 def projects():
