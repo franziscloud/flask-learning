@@ -1,15 +1,27 @@
 from flask import Flask, render_template, abort, flash, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from forms import ContactForm
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'franz-secret-key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-projects_data = [
-    {'id': 1, 'name': 'Online Resume', 'description': 'A web-based resume built with Flask.', 'url': 'https://google.com'},
-    {'id': 2, 'name': 'Todo App', 'description': 'A task manager with full CRUD.', 'url': '#'},
-    {'id': 3, 'name': 'Barter Trade Site', 'description': 'A P2P Trading Platform', 'url': '#'},
-]
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+class Project(db.Model):
+    __tablename__ = 'projects'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    url = db.Column(db.String(200), default='#')
+    
+    def __repr__(self):
+        return f'<Project {self.name}>'
 
 
 @app.route('/')
@@ -30,13 +42,12 @@ def contact():
 
 @app.route('/projects')
 def projects():
-    return render_template('projects.html', projects=projects_data)
+    all_projects = Project.query.order_by(Project.name).all()
+    return render_template('projects.html', projects=all_projects)
 
 @app.route('/projects/<int:project_id>')
 def project_detail(project_id):
-    project = next((p for p in projects_data if p['id'] == project_id), None)
-    if project is None:
-        abort(404)
+    project = Project.query.get_or_404(project_id)
     return render_template('project_detail.html', project=project)
 
 
